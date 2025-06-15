@@ -1,0 +1,12 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<h1>Все акции и скидки</h1>
+<ul>
+  {% for discount in discounts %}
+    <li>
+      <a href="{% url 'discount_detail' discount.pk %}">{{ discount.name }}</a>
+      — {{ discount.discount_percent }}%
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

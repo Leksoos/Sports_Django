@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head><title>Форма продукта</title></head>
+<body>
+    <h2>{% if form.instance.pk %}Редактировать{% else %}Создать{% endif %} товар</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Сохранить</button>
+    </form>
+</body>
+</html>

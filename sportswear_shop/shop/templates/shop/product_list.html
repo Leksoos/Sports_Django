@@ -1,0 +1,48 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'shop/main.css' %}">
+
+{% block content %}
+<div class="container">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Список товаров</title>
+    </head>
+    <body>
+        {% if category %}
+            <h1>Категория: {{ category.name }}</h1>
+        {% else %}
+            <h1>Все товары</h1>
+        {% endif %}
+        <ul class="product-list">
+            {% for product in products %}
+                <li class="product-card">
+                    <div class="product-image">
+                        <a href="{{ product.get_absolute_url }}">
+                          {% if product.images.all %}
+                            <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}">
+                          {% else %}
+                            <div class="no-image">Нет изображения</div>
+                          {% endif %}
+                        </a>
+                    </div>
+                    <a class="product-title" href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                    <div class="product-brand">{{ product.brand }}</div>
+                    <div class="product-price">{{ product.price }} руб.</div>
+                    {% if user.is_authenticated %}
+                      <form action="{% url 'add_to_cart' product.id %}" method="post" style="margin-top:10px;">
+                        {% csrf_token %}
+                        <button type="submit" class="add-to-cart-btn">В корзину</button>
+                      </form>
+                    {% else %}
+                      <a href="{% url 'login' %}">Войдите, чтобы добавить в корзину</a>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>В этой категории пока нет товаров.</li>
+            {% endfor %}
+        </ul>
+    </body>
+</div>
+{% endblock %}

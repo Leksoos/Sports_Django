@@ -1,0 +1,14 @@
+Const a = 5;
+
+Function sayHello() {
+
+		Console.log(“Hello”)
+}
+
+Const a = 5;
+
+Function sayHello() {
+
+		Console.log(“Hello”)
+}
+

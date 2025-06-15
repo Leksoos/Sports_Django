@@ -1,0 +1,13 @@
+<li>
+  <b>{{ comment.user.username }}</b>:
+  <span style="color:#ffb400;">{% for i in "12345"|slice:":comment.rating"|make_list %}★{% endfor %}</span>
+  {{ comment.text }}
+  {% if user.is_authenticated %}
+    {% if user == comment.user or user.is_staff %}
+      <form action="{% url 'delete_comment' comment.id %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Удалить</button>
+      </form>
+    {% endif %}
+  {% endif %}
+</li>

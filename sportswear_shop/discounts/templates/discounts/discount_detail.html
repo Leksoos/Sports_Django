@@ -1,0 +1,44 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% load discount_tags %}
+<link rel="stylesheet" href="{% static 'shop/main.css' %}">
+
+{% block content %}
+<div class="container">
+    <h1>{{ discount.name }} ({{ discount.discount_percent }}%)</h1>
+    <h2>Товары по этой акции:</h2>
+    <ul class="product-list">
+        {% for product in products %}
+            <li class="product-card">
+                <div class="product-image">
+                    <a href="{{ product.get_absolute_url }}">
+                      {% if product.images.all %}
+                        <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}">
+                      {% else %}
+                        <div class="no-image">Нет изображения</div>
+                      {% endif %}
+                    </a>
+                </div>
+                <a class="product-title" href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                <div class="product-brand">{{ product.brand }}</div>
+                <div class="product-price">{{ product.price }} руб.</div>
+                <div class="product-discount-price">
+                    <span style="color: #e53935;">
+                        Цена по скидке: {{ product.price|discount_price:discount.discount_percent }} руб.
+                    </span>
+                </div>
+                {% if user.is_authenticated %}
+                  <form action="{% url 'add_to_cart' product.id %}" method="post" style="margin-top:10px;">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-cart-btn">В корзину</button>
+                  </form>
+                {% else %}
+                  <a href="{% url 'login' %}">Войдите, чтобы добавить в корзину</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Нет товаров по этой акции.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

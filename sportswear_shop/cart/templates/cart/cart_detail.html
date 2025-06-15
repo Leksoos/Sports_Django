@@ -1,0 +1,107 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<div class="cart-outer">
+  <div class="cart-container">
+    <h2 class="cart-title">Корзина</h2>
+    {% if cart.items.all %}
+      <div class="cart-table-center">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Товар</th>
+              <th>Изображение</th>
+              <th>Цена</th>
+              <th>Кол-во</th>
+              <th>Сумма</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for item in cart.items.all %}
+            <tr id="item-row-{{ item.id }}">
+              <td class="cart-product-name">{{ item.product.name }}</td>
+              <td>
+                {% if item.product.images.all %}
+                  <img src="{{ item.product.images.all.0.image.url }}" class="cart-img" alt="{{ item.product.name }}">
+                {% else %}
+                  <span class="cart-no-img">Нет изображения</span>
+                {% endif %}
+              </td>
+              <td class="cart-price">{{ item.product.price|floatformat:2 }} ₽</td>
+              <td class="cart-qty">
+                <button class="qty-btn" data-action="minus" data-item="{{ item.id }}">−</button>
+                <span id="qty-{{ item.id }}" class="cart-qty-num">{{ item.quantity }}</span>
+                <button class="qty-btn" data-action="plus" data-item="{{ item.id }}">+</button>
+              </td>
+              <td class="cart-sum"><span id="sum-{{ item.id }}">{{ item.get_total|floatformat:2 }}</span> ₽</td>
+              <td>
+                <form action="{% url 'remove_from_cart' item.id %}" method="post" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="cart-remove-btn">Удалить</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="cart-total-block">
+        <span>Итого:</span>
+        <span id="cart-total" class="cart-total-sum">{{ total_price|floatformat:2 }}</span> ₽
+      </div>
+      {% if discount_amount %}
+        <div class="cart-discount-info">
+          <span>Скидка: -{{ discount_amount|floatformat:2 }} ₽</span>
+        </div>
+        <div class="cart-final-block">
+          <span>К оплате:</span>
+          <span id="cart-final" class="cart-final-sum">{{ final_price|floatformat:2 }}</span> ₽
+        </div>
+      {% endif %}
+      <div class="cart-discount-block">
+        <form method="post" class="cart-discount-form">
+          {% csrf_token %}
+          <label for="discount" class="cart-discount-label">Выберите скидку:</label>
+          <select name="discount_id" id="discount" class="cart-discount-select">
+            <option value="">Без скидки</option>
+            {% for discount in discounts %}
+              <option value="{{ discount.id }}" {% if discount.id == selected_discount_id %}selected{% endif %}>
+                {{ discount.name }} ({{ discount.discount_percent }}%)
+              </option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="cart-discount-btn">Применить</button>
+        </form>
+      </div>
+    {% else %}
+      <p>Корзина пуста</p>
+    {% endif %}
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.qty-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const itemId = this.dataset.item;
+      const action = this.dataset.action;
+      fetch("{% url 'update_cart_item' 0 %}".replace('0', itemId), {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: new URLSearchParams({'action': action})
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.quantity !== undefined) {
+          document.getElementById('qty-' + itemId).textContent = data.quantity;
+          document.getElementById('sum-' + itemId).textContent = data.item_sum.toFixed(2);
+          document.getElementById('cart-total').textContent = data.total.toFixed(2);
+        }
+      });
+    });
+  });
+});
+</script>
+{% endblock %}

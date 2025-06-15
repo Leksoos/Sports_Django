@@ -1,0 +1,17 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'shop/main.css' %}">
+
+{% block content %}
+<div class="container" style="max-width: 400px; margin-top: 60px;">
+  <h2>Регистрация</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Зарегистрироваться</button>
+  </form>
+  <p style="margin-top: 18px; text-align: center;">
+    Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a>
+  </p>
+</div>
+{% endblock %}

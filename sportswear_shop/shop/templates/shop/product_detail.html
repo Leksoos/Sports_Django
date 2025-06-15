@@ -1,0 +1,88 @@
+{% extends 'shop/base.html' %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'shop/main.css' %}">
+
+{% block content %}
+<div class="container">
+  <h2>{{ product.name }}</h2>
+  {% if product.images.all %}
+    <img src="{{ product.images.all.0.image.url }}" width="200">
+  {% endif %}
+  <p><b>Бренд:</b> {{ product.brand.name }}</p>
+  <p><b>Категория:</b> {{ product.category.name }}</p>
+  <p><b>Цена:</b> {{ product.price }} ₽</p>
+  <p><b>Описание:</b> {{ product.description }}</p>
+  <a href="{% url 'product_list' %}">← К списку товаров</a>
+
+  {% if user.is_authenticated %}
+    <form action="{% url 'add_to_cart' product.id %}" method="post">
+      {% csrf_token %}
+      <button type="submit">В корзину</button>
+    </form>
+  {% else %}
+    <a href="{% url 'login' %}">Войдите, чтобы добавить в корзину</a>
+  {% endif %}
+
+  <h3>Отзывы</h3>
+  <ul id="comments-list">
+    {% for comment in product.comments.all %}
+      {% include 'shop/comment_item.html' with comment=comment %}
+    {% empty %}
+      <li>Нет отзывов</li>
+    {% endfor %}
+  </ul>
+
+  {% if user.is_authenticated %}
+    <button id="open-comment-modal" class="add-to-cart-btn" style="margin-top:20px;">Оставить отзыв</button>
+    <div id="comment-modal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:1000; align-items:center; justify-content:center;">
+      <div style="background:#fff; border-radius:12px; padding:24px; min-width:300px; position:relative;">
+        <button id="close-comment-modal" style="position:absolute; right:12px; top:12px; background:none; border:none; font-size:1.5em; cursor:pointer;">×</button>
+        <form id="comment-form" method="post" action="{% url 'add_comment' product.pk %}">
+          {% csrf_token %}
+          {{ form.text.label_tag }}<br>
+          {{ form.text }}<br>
+          {{ form.rating.label_tag }}<br>
+          {{ form.rating }}<br>
+          <button type="submit" class="add-to-cart-btn">Отправить</button>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв.</p>
+  {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const openBtn = document.getElementById('open-comment-modal');
+  const closeBtn = document.getElementById('close-comment-modal');
+  const modal = document.getElementById('comment-modal');
+  const form = document.getElementById('comment-form');
+  if(openBtn && closeBtn && modal && form) {
+    openBtn.onclick = () => { modal.style.display = 'flex'; };
+    closeBtn.onclick = () => { modal.style.display = 'none'; };
+    modal.onclick = function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
+    form.onsubmit = function(e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      fetch(form.action, {
+        method: 'POST',
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.html) {
+          window.location.reload();
+        }
+      });
+    };
+  }
+});
+</script>
+{% endblock %}
