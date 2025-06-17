@@ -1,0 +1,14 @@
+<li>
+  <b>{{ review.user.username }}</b>
+  — {{ review.rating }}★<br>
+  {{ review.comment }}<br>
+  <small>{{ review.created_at }}</small>
+  {% if user.is_authenticated %}
+    {% if user == review.user or user.is_staff %}
+      <form action="{% url 'delete_review' review.id %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="add-to-cart-btn">Удалить</button>
+      </form>
+    {% endif %}
+  {% endif %}
+</li>

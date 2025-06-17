@@ -16,7 +16,7 @@
     {% for product in search_results %}
       <li>
         {% if product.images.all %}
-          <img src="{{ product.images.all.0.image.url }}" width="60">
+          <img src="{{ product.images.all.0.image.url }}" class="product-image-main" width="180" height="180">
         {% endif %}
         <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
       </li>
@@ -27,18 +27,20 @@
 {% endif %}
 
 <h2>Новинки каталога</h2>
-<ol>
+<ol class="product-list-main">
   {% for product in new_products %}
   <li>
     {% if product.images.all %}
-      <img src="{{ product.images.all.0.image.url }}" width="100">
+      <img src="{{ product.images.all.0.image.url }}" class="product-image-main" width="180" height="180">
     {% else %}
       <span>Нет изображения</span>
     {% endif %}
-    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-    <span>{{ product.brand.name }}</span>
-    <span>{{ product.created_at|date:"d.m.Y" }}</span>
-    <button>В избранное</button>
+    <div class="product-info">
+      <a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br>
+      <span>{{ product.brand.name }}</span><br>
+      <span>{{ product.created_at|date:"d.m.Y" }}</span><br>
+      <button>В избранное</button>
+    </div>
   </li>
   {% endfor %}
 </ol>
@@ -51,7 +53,7 @@
   {% for product in popular_products %}
   <li>
     {% if product.images.all %}
-      <img src="{{ product.images.all.0.image.url }}" width="100">
+      <img src="{{ product.images.all.0.image.url }}" class="product-image-main" width="180" height="180">
     {% else %}
       <span>Нет изображения</span>
     {% endif %}

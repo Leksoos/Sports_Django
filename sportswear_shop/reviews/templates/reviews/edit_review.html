@@ -1,0 +1,12 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<div class="container">
+  <h3>Редактировать отзыв</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+    <a href="{% url 'product_detail' review.product.pk %}">Отмена</a>
+  </form>
+</div>
+{% endblock %}

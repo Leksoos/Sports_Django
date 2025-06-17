@@ -120,28 +120,6 @@ def product_delete(request, pk):
         return redirect('product_list')
     return render(request, 'shop/product_confirm_delete.html', {'product': product})
 
-@login_required
-def add_comment(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == 'POST':
-        form = ProductCommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.product = product
-            comment.user = request.user
-            comment.save()
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                html = render_to_string('shop/comment_item.html', {'comment': comment, 'user': request.user})
-                return JsonResponse({'html': html})
-            return redirect('product_detail', pk=pk)
-    return JsonResponse({'error': 'Ошибка'}, status=400)
-
-@login_required
-def delete_comment(request, comment_id):
-    comment = get_object_or_404(ProductComment, id=comment_id)
-    if request.user == comment.user or request.user.is_staff:
-        comment.delete()
-    return redirect('product_detail', pk=comment.product.pk)
 
 def product_list_by_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
@@ -162,3 +140,25 @@ class ProductListAPIView(generics.ListAPIView):
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
+
+@login_required
+def add_review(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.product = product
+            review.user = request.user
+            review.save()
+            return redirect('product_detail', pk=pk)
+    else:
+        form = ReviewForm()
+    return render(request, 'reviews/add_review.html', {'form': form, 'product': product})
+
+@login_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    if request.user == review.user or request.user.is_staff:
+        review.delete()
+    return redirect('product_detail', pk=review.product.pk)
