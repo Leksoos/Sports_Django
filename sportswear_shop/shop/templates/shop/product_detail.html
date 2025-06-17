@@ -26,8 +26,20 @@
 
   <h3>Отзывы</h3>
   <ul id="comments-list">
-    {% for comment in product.comments.all %}
-      {% include 'shop/comment_item.html' with comment=comment %}
+    {% for review in product.reviews.all %}
+      <li>
+        <b>{{ review.user.username }}</b>:
+        <span style="color:#ffb400;">{% for i in "12345"|slice:":review.rating"|make_list %}★{% endfor %}</span>
+        {{ review.comment }}
+        {% if user.is_authenticated %}
+          {% if user == review.user or user.is_staff %}
+            <form action="{% url 'delete_review' review.id %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit">Удалить</button>
+            </form>
+          {% endif %}
+        {% endif %}
+      </li>
     {% empty %}
       <li>Нет отзывов</li>
     {% endfor %}
@@ -38,12 +50,9 @@
     <div id="comment-modal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:1000; align-items:center; justify-content:center;">
       <div style="background:#fff; border-radius:12px; padding:24px; min-width:300px; position:relative;">
         <button id="close-comment-modal" style="position:absolute; right:12px; top:12px; background:none; border:none; font-size:1.5em; cursor:pointer;">×</button>
-        <form id="comment-form" method="post" action="{% url 'add_comment' product.pk %}">
+        <form id="comment-form" method="post" action="{% url 'add_review' product.pk %}">
           {% csrf_token %}
-          {{ form.text.label_tag }}<br>
-          {{ form.text }}<br>
-          {{ form.rating.label_tag }}<br>
-          {{ form.rating }}<br>
+          {{ form.as_p }}
           <button type="submit" class="add-to-cart-btn">Отправить</button>
         </form>
       </div>

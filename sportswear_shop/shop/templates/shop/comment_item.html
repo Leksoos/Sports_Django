@@ -1,13 +1,25 @@
-<li>
-  <b>{{ comment.user.username }}</b>:
-  <span style="color:#ffb400;">{% for i in "12345"|slice:":comment.rating"|make_list %}★{% endfor %}</span>
-  {{ comment.text }}
-  {% if user.is_authenticated %}
-    {% if user == comment.user or user.is_staff %}
-      <form action="{% url 'delete_comment' comment.id %}" method="post" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit">Удалить</button>
-      </form>
-    {% endif %}
-  {% endif %}
-</li>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your Title Here</title>
+</head>
+<body>
+    <ul>
+        <li>
+          <b>{{ comment.user.username }}</b>:
+          <span style="color:#ffb400;">{% for i in "12345"|slice:":comment.rating"|make_list %}★{% endfor %}</span>
+          {{ comment.text }}
+          {% if user.is_authenticated %}
+            {% if user == comment.user or user.is_staff %}
+              <form action="{% url 'delete_comment' comment.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Удалить</button>
+              </form>
+            {% endif %}
+          {% endif %}
+        </li>
+    </ul>
+</body>
+</html>

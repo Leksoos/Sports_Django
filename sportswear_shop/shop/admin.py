@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Brand, Product, ProductImage, ProductComment
+from .models import Category, Brand, Product, ProductImage
 from django.utils.html import format_html
 
 class ProductImageInline(admin.TabularInline):
@@ -54,7 +54,3 @@ class ProductImageAdmin(admin.ModelAdmin):
         if obj.image:
             return format_html('<img src="{}" style="max-height: 60px; max-width: 60px;" />', obj.image.url)
         return "—"
-
-@admin.register(ProductComment)
-class ProductCommentAdmin(admin.ModelAdmin):
-    list_display = ('product', 'user', 'created_at', 'text')

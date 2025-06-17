@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Count, Avg, Sum, Q
-from .models import Product, ProductComment, Category  # добавьте Category
-from .forms import ProductForm, ProductCommentForm
+from .models import Product, Category
+from .forms import ProductForm
 from discounts.models import Discount
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -12,6 +12,7 @@ from .serializers import ProductSerializer
 from rest_framework import generics
 from .filters import ProductFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from reviews.forms import ReviewForm
 
 def index(request):
     search_query = request.GET.get('q', '')
@@ -37,7 +38,7 @@ def index(request):
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    form = ProductCommentForm()
+    form = ReviewForm()
     return render(request, 'shop/product_detail.html', {'product': product, 'form': form})
 
 def discount_detail(request, pk):

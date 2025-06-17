@@ -105,9 +105,9 @@ class ProductImage(models.Model):
         return f"Изображение для {self.product.name}"
 
 # Комментарии к товарам
-class ProductComment(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    text = models.TextField()
-    rating = models.PositiveSmallIntegerField(default=5)  # 1-5 звёзд
-    created_at = models.DateTimeField(auto_now_add=True)
+# class ProductComment(models.Model):
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+#     text = models.TextField()
+#     rating = models.PositiveSmallIntegerField(default=5)  # 1-5 звёзд
+#     created_at = models.DateTimeField(auto_now_add=True)
