@@ -3,6 +3,10 @@ from .views import product_list, product_create, product_update, product_delete,
 from .views import ProductDetailAPIView, ProductListAPIView
 from reviews.views import add_review, delete_review, edit_review
 from . import views
+from django.urls import path
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
 
 urlpatterns = [
     path('', product_list, name='product_list'),  # Каталог товаров
@@ -18,4 +22,5 @@ urlpatterns = [
     path('product/<int:pk>/add_review/', add_review, name='add_review'),
     path('review/<int:review_id>/delete/', delete_review, name='delete_review'),
     path('review/<int:review_id>/edit/', edit_review, name='edit_review'),
+    path('sentry-debug/', trigger_error),
 ]

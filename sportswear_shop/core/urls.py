@@ -22,6 +22,7 @@ from users import views as user_views
 
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +35,7 @@ urlpatterns = [
     path('register/', user_views.register, name='register'),
     path('api/', include('shop.api_urls')),       # API-эндпоинты (см. ниже)
     path('api/', include('reviews.api_urls')),
+    path('silk/', include('silk.urls', namespace='silk'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
