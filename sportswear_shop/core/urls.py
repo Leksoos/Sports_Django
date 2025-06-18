@@ -33,6 +33,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', user_views.register, name='register'),
     path('api/', include('shop.api_urls')),       # API-эндпоинты (см. ниже)
+    path('api/', include('reviews.api_urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

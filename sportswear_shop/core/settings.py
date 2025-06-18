@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'discounts',
     'cart',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_filters',
 ]
 

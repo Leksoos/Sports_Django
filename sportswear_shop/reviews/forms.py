@@ -2,6 +2,9 @@ from django import forms
 from .models import Review
 
 class ReviewForm(forms.ModelForm):
+    """
+    Форма для создания и редактирования отзывов.
+    """
     class Meta:
         model = Review
         fields = ['rating', 'comment']
