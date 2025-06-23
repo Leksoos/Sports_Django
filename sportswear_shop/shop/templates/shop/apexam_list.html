@@ -1,0 +1,17 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<h2>Экзамены — {{ fio }} (группа {{ group }})</h2>
+{% for exam in exams %}
+  <div style="border:1px solid #ccc; margin-bottom:20px; padding:10px;">
+    <b>Название экзамена:</b> {{ exam.name }}<br>
+    <b>Дата создания:</b> {{ exam.created_at|date:"d.m.Y H:i" }}<br>
+    <b>Дата проведения:</b> {{ exam.exam_date|date:"d.m.Y" }}<br>
+    <b>Пользователи:</b> {{ exam.users.all|join:", " }}<br>
+    <b>Опубликовано:</b> {{ exam.is_public|yesno:"Да,Нет" }}<br>
+    <b>Задание:</b><br>
+    <img src="{{ exam.image.url }}" width="200">
+  </div>
+{% empty %}
+  <p>Нет опубликованных экзаменов.</p>
+{% endfor %}
+{% endblock %}

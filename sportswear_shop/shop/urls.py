@@ -23,4 +23,5 @@ urlpatterns = [
     path('review/<int:review_id>/delete/', delete_review, name='delete_review'),
     path('review/<int:review_id>/edit/', edit_review, name='edit_review'),
     path('sentry-debug/', trigger_error),
+    path('apexam/', views.apexam_list, name='apexam_list'),
 ]

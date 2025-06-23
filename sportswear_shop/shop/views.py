@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Product, Category
+from .models import Product, Category, apexam
 from .forms import ProductForm
 from discounts.models import Discount
 from reviews.forms import ReviewForm
@@ -284,3 +284,15 @@ def delete_review(request: HttpRequest, review_id: int) -> HttpResponse:
     if request.user == review.user or request.user.is_staff:
         review.delete()
     return redirect('product_detail', pk=review.product.pk)
+
+
+def apexam_list(request):
+    """
+    Страница с опубликованными экзаменами.
+    """
+    exams = apexam.objects.filter(is_public=True)
+    return render(request, 'shop/apexam_list.html', {
+        'exams': exams,
+        'fio': 'Перцев Алексей Витальевич',
+        'group': '231-321',
+    })
