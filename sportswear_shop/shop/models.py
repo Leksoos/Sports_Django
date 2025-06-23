@@ -3,6 +3,9 @@ from django.db import models
 from django.utils import timezone
 from django.urls import reverse
 from django.conf import settings
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class ProductManager(models.Manager):
     def available(self) -> models.QuerySet["Product"]:
@@ -122,3 +125,17 @@ class ProductImage(models.Model):
 
     def __str__(self) -> str:
         return f"Изображение для {self.product.name}"
+
+class apexam(models.Model):
+    """
+    Модель для хранения информации о экзаменах и пользователях, которые их пишут.
+    """
+    name = models.CharField("Название экзамена", max_length=255)
+    created_at = models.DateTimeField("Дата создания записи", auto_now_add=True)
+    exam_date = models.DateField("Дата проведения экзамена")
+    image = models.ImageField("Задание (картинка)", upload_to='exam_images/')
+    users = models.ManyToManyField(User, verbose_name="Пользователи")
+    is_public = models.BooleanField("Опубликовано", default=False)
+
+    def __str__(self) -> str:
+        return self.name
