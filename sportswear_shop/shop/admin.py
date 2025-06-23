@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Brand, Product, ProductImage
+from .models import Category, Brand, Product, ProductImage, apexam
 from django.utils.html import format_html
 from typing import Any
 
@@ -70,3 +70,11 @@ class ProductImageAdmin(admin.ModelAdmin):
         if obj.image:
             return format_html('<img src="{}" style="max-height: 60px; max-width: 60px;" />', obj.image.url)
         return "—"
+
+@admin.register(apexam)
+class xxexamAdmin(admin.ModelAdmin):
+    list_display = ('name', 'exam_date', 'created_at', 'is_public')
+    search_fields = ('name', 'users__email')
+    list_filter = ('is_public', 'created_at', 'exam_date')
+    filter_horizontal = ('users',)
+    date_hierarchy = 'exam_date'
